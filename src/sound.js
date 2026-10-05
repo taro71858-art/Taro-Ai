@@ -20,7 +20,8 @@ function getAudioContext() {
 export const SOUND = {
   play(type = 'click', force = false) {
     try {
-      const state = JSON.parse(localStorage.getItem('coremax_state_v3') || '{}');
+      const savedStr = localStorage.getItem('coremax_state_v4') || localStorage.getItem('coremax_state_v3') || '{}';
+      const state = JSON.parse(savedStr);
       if (state.soundEnabled === false && !force) return;
 
       const ctx = getAudioContext();
@@ -93,7 +94,8 @@ export const SOUND = {
 
   vibrate(pattern = [25]) {
     try {
-      const state = JSON.parse(localStorage.getItem('coremax_state_v3') || '{}');
+      const savedStr = localStorage.getItem('coremax_state_v4') || localStorage.getItem('coremax_state_v3') || '{}';
+      const state = JSON.parse(savedStr);
       if (state.vibeEnabled === false) return;
       if ('vibrate' in navigator) {
         navigator.vibrate(pattern);

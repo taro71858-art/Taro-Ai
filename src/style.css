@@ -266,10 +266,36 @@ body {
 .header-title {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.05rem;
-  letter-spacing: -0.01em;
+  font-size: clamp(0.86rem, 3.8vw, 1.05rem);
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   white-space: nowrap;
+}
+
+@media (max-width: 400px) {
+  .app-header {
+    padding: 0 8px;
+    gap: 4px;
+  }
+  .header-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+  .insta-header-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+  .niche-pill {
+    height: 34px;
+    max-width: 78px;
+    font-size: 0.72rem;
+    padding: 0 6px;
+  }
+  .header-title {
+    font-size: 0.88rem;
+  }
 }
 
 .header-right {

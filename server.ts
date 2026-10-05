@@ -4,8 +4,12 @@ import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json({ limit: '10mb' }));
@@ -85,9 +89,9 @@ app.post('/api/advisor', async (req, res) => {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
-    // Use gemini-3.8-flash for fast, accurate text responses
+    // Use gemini-2.5-flash for fast, accurate text responses and advice
     const responseStream = await ai.models.generateContentStream({
-      model: 'gemini-3.8-flash',
+      model: 'gemini-2.5-flash',
       contents: contents,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,

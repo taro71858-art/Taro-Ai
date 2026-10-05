@@ -14,6 +14,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./src/style.css">
+  <script>
+    window.$ = function(s) { return document.querySelector(s); };
+    window.$$ = function(s) { return document.querySelectorAll(s); };
+  </script>
 </head>
 <body>
   <!-- THEME TRANSITION CIRCLE WAVE (PART A6) -->
@@ -45,7 +49,7 @@
     <!-- APP HEADER (Fixed, max 480px, responsive 360-400px) -->
     <header class="app-header">
       <div class="header-left">
-        <button type="button" class="header-btn" id="btn-open-drawer" aria-label="Меню">
+        <button type="button" class="header-btn" id="btn-open-drawer" aria-label="Меню" onclick="window.APP.openDrawer()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -99,7 +103,7 @@
           </div>
 
           <div class="field-group">
-            <label class="field-label">
+            <label class="field-label" id="field-label-revenue">
               <span>Выручка (доход за месяц)</span>
               <span style="color:var(--gold-primary);">*главный показатель</span>
             </label>
@@ -108,27 +112,27 @@
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
             <div class="field-group">
-              <label class="field-label">Аренда</label>
+              <label class="field-label" id="field-label-rent">Аренда</label>
               <input type="text" inputmode="decimal" id="inp-rent" class="input-control" value="100 000" placeholder="100 000">
             </div>
             <div class="field-group">
-              <label class="field-label">ФОТ (зарплаты)</label>
+              <label class="field-label" id="field-label-salary">ФОТ (зарплаты)</label>
               <input type="text" inputmode="decimal" id="inp-salary" class="input-control" value="200 000" placeholder="200 000">
             </div>
           </div>
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
             <div class="field-group">
-              <label class="field-label">Реклама</label>
+              <label class="field-label" id="field-label-ads">Реклама</label>
               <input type="text" inputmode="decimal" id="inp-ads" class="input-control" value="50 000" placeholder="50 000">
             </div>
             <div class="field-group">
-              <label class="field-label">Прочее / COGS</label>
+              <label class="field-label" id="field-label-other">Прочее / COGS</label>
               <input type="text" inputmode="decimal" id="inp-other" class="input-control" value="0" placeholder="0">
             </div>
           </div>
 
-          <button type="button" class="btn btn-gold" onclick="window.APP.calculateAnalyst()" style="width:100%; margin-top:4px;">
+          <button type="button" class="btn btn-gold" id="btn-calc-analyst" onclick="window.APP.calculateAnalyst()" style="width:100%; margin-top:4px;">
             <span>Рассчитать прибыль и маржу</span>
           </button>
         </div>
@@ -152,7 +156,7 @@
         <div class="card">
           <div class="field-group">
             <div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:700;">
-              <span>🏷️ Изменение цены продажи:</span>
+              <span id="wi-price-label-text">🏷️ Изменение цены продажи:</span>
               <span id="wi-price-val" style="color:var(--gold-primary);">0%</span>
             </div>
             <input type="range" id="wi-price-slider" min="-30" max="30" value="0" step="1" style="width:100%; accent-color:var(--gold-primary); margin-top:6px;" oninput="window.APP.renderWhatIf(true)">
@@ -160,7 +164,7 @@
 
           <div class="field-group" style="margin-top:12px;">
             <div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:700;">
-              <span>📦 Изменение объёма продаж:</span>
+              <span id="wi-vol-label-text">📦 Изменение объёма продаж:</span>
               <span id="wi-vol-val" style="color:var(--cyan-primary);">0%</span>
             </div>
             <input type="range" id="wi-vol-slider" min="-50" max="100" value="0" step="5" style="width:100%; accent-color:var(--cyan-primary); margin-top:6px;" oninput="window.APP.renderWhatIf(true)">
@@ -168,7 +172,7 @@
 
           <div class="field-group" style="margin-top:12px;">
             <div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:700;">
-              <span>📉 Изменение расходов:</span>
+              <span id="wi-cost-label-text">📉 Изменение расходов:</span>
               <span id="wi-cost-val" style="color:var(--rose-primary);">0%</span>
             </div>
             <input type="range" id="wi-cost-slider" min="-30" max="30" value="0" step="1" style="width:100%; accent-color:var(--rose-primary); margin-top:6px;" oninput="window.APP.renderWhatIf(true)">
@@ -186,15 +190,15 @@
         <div class="card" style="padding:10px 12px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div style="display:flex; align-items:center; gap:6px;">
-              <span style="font-size:0.75rem; color:var(--emerald-primary); font-weight:700;">● Онлайн (Gemini Pro/Flash)</span>
+              <span style="font-size:0.75rem; color:var(--emerald-primary); font-weight:700;" id="adv-online-status">● Онлайн (Gemini 2.5 Flash)</span>
             </div>
             <div style="display:flex; align-items:center; gap:6px;">
               <button type="button" class="btn-chip" id="btn-stop-advisor" onclick="window.APP.stopAdvisorGeneration()" style="display:none; color:var(--rose-primary); border-color:var(--rose-primary);">⏹️ Остановить</button>
-              <button type="button" class="btn-chip" onclick="window.APP.clearAdvisorChat()">➕ Новый чат</button>
+              <button type="button" class="btn-chip" id="adv-btn-new-chat" onclick="window.APP.clearAdvisorChat()">➕ Новый чат</button>
             </div>
           </div>
           <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; border-top:1px solid var(--border-subtle); padding-top:6px;">
-            <label style="font-size:0.75rem; color:var(--text-secondary); display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <label style="font-size:0.75rem; color:var(--text-secondary); display:flex; align-items:center; gap:6px; cursor:pointer;" id="adv-use-my-data-label">
               <input type="checkbox" id="chk-use-my-data" checked onchange="window.APP.toggleUseMyData(this.checked)" style="accent-color:var(--gold-primary);">
               <span>📊 Использовать данные моих расчётов</span>
             </label>
@@ -223,30 +227,30 @@
 
         <div class="card card-gold">
           <div class="field-group">
-            <label class="field-label">Сумма для конвертации</label>
+            <label class="field-label" id="fx-amount-label">Сумма для конвертации</label>
             <input type="text" inputmode="decimal" id="fx-amount-input" class="input-control" value="100 000" oninput="window.APP.recalcConverter()">
           </div>
 
           <div style="display:grid; grid-template-columns:1fr 44px 1fr; gap:6px; align-items:flex-end;">
             <div class="field-group" style="margin:0;">
-              <label class="field-label">Из</label>
+              <label class="field-label" id="fx-from-label">Из</label>
               <select id="fx-from-select" class="input-control" onchange="window.APP.recalcConverter()"></select>
             </div>
             <button type="button" class="btn btn-secondary" onclick="window.APP.swapFx()" style="height:48px; padding:0;">⇄</button>
             <div class="field-group" style="margin:0;">
-              <label class="field-label">В</label>
+              <label class="field-label" id="fx-to-label">В</label>
               <select id="fx-to-select" class="input-control" onchange="window.APP.recalcConverter()"></select>
             </div>
           </div>
 
           <div style="background:var(--bg-input); border:1px solid var(--border-gold); padding:12px; border-radius:var(--radius-md); margin-top:12px; text-align:center;">
-            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary);">Итоговый результат</div>
+            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary);" id="fx-res-label">Итоговый результат</div>
             <div class="metric-hero" id="fx-converted-result" style="font-size:1.9rem; font-weight:800; color:var(--gold-primary); margin:3px 0;">1 080 USD</div>
             <div id="fx-rate-subtitle" style="font-size:0.75rem; color:var(--text-muted);">1 RUB = 0.0108 USD</div>
           </div>
         </div>
 
-        <button type="button" class="btn btn-secondary" onclick="window.APP.openCurrencyPicker()" style="width:100%;">
+        <button type="button" class="btn btn-secondary" id="fx-catalog-btn" onclick="window.APP.openCurrencyPicker()" style="width:100%;">
           <span>🌐 Открыть каталог 256+ валют и крипты ➔</span>
         </button>
       </section>
@@ -283,10 +287,10 @@
         <!-- PANE: ОПЕРАЦИИ -->
         <div id="history-pane-ops" hidden>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
-            <button type="button" class="btn btn-gold" onclick="window.APP.openAddOpModal()" style="height:44px; font-size:0.82rem;">
+            <button type="button" class="btn btn-gold" id="btn-add-op-main" onclick="window.APP.openAddOpModal()" style="height:44px; font-size:0.82rem;">
               <span>➕ Ввод операции</span>
             </button>
-            <button type="button" class="btn btn-secondary" onclick="window.APP.simulateVoiceInput()" style="height:44px; font-size:0.82rem; border-color:var(--cyan-primary); color:var(--cyan-primary);">
+            <button type="button" class="btn btn-secondary" id="btn-voice-input-main" onclick="window.APP.simulateVoiceInput()" style="height:44px; font-size:0.82rem; border-color:var(--cyan-primary); color:var(--cyan-primary);">
               <span>🎙️ Голосовой ввод</span>
             </button>
           </div>
@@ -335,19 +339,24 @@
     <div class="drawer-backdrop" id="app-drawer" onclick="window.APP.closeDrawer()">
       <div class="drawer-pane" onclick="event.stopPropagation()">
         <div class="drawer-header">
-          <div style="font-family:var(--font-display); font-weight:800; font-size:1.1rem; color:var(--text-primary);">Меню CoreMaX</div>
+          <div style="font-family:var(--font-display); font-weight:800; font-size:1.1rem; color:var(--text-primary);" id="drawer-menu-title">Меню CoreMaX</div>
           <button type="button" class="btn-chip" onclick="window.APP.closeDrawer()">✕</button>
         </div>
 
         <div class="drawer-content">
           <!-- CURRENT BUSINESS CARD -->
           <div class="card card-gold" style="padding:10px 12px; cursor:pointer;" onclick="window.APP.openNichePicker()">
-            <div style="font-size:0.7rem; color:var(--text-secondary); text-transform:uppercase;">Текущий бизнес</div>
+            <div style="font-size:0.7rem; color:var(--text-secondary); text-transform:uppercase;" id="drawer-niche-label">Текущий бизнес</div>
             <div style="font-weight:800; font-size:1rem; color:var(--gold-primary);" id="drawer-niche-name">☕ Кафе / Кофейня</div>
           </div>
 
           <!-- DEFAULT CURRENCY CARD (256+) -->
           <div class="card" id="drawer-currency-card" style="padding:10px 12px; cursor:pointer;" onclick="window.APP.openCurrencyPicker()">
+            <!-- INJECTED -->
+          </div>
+
+          <!-- APP LANGUAGE CARD (36 LANGUAGES) -->
+          <div class="card" id="drawer-language-card" style="padding:10px 12px; cursor:pointer;" onclick="window.APP.openLanguagePicker()">
             <!-- INJECTED -->
           </div>
 
@@ -367,45 +376,73 @@
             <button type="button" class="btn btn-secondary" onclick="window.APP.toggleBatterySaver()" style="height:40px; font-size:0.78rem; width:100%; border-color:var(--border-subtle);">
               <span id="drawer-battery-label">🔋 Энергосбережение: Выкл</span>
             </button>
+            <button type="button" class="btn btn-secondary" id="drawer-change-lang-btn" onclick="window.APP.openLanguagePicker()" style="height:40px; font-size:0.78rem; width:100%; border-color:var(--border-gold); color:var(--gold-primary);">
+              <span>🌐 Изменить язык (36 языков)</span>
+            </button>
           </div>
 
           <!-- ACCORDION GROUPS -->
           <div class="accordion-item open">
             <button type="button" class="accordion-trigger" onclick="this.parentElement.classList.toggle('open')">
-              <span>📊 Расчёты и документы</span>
+              <span id="acc-calc-title" data-i18n="acc_calculations">📊 Расчёты и финансы</span>
               <span class="chevron">▾</span>
             </button>
             <div class="accordion-body">
-              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('invoice')"><span>🧾</span><span>Счета и сметы</span></button>
-              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('discount')"><span>🏷️</span><span>Скидки и акции</span></button>
-              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('taxes')"><span>📑</span><span>Налоги и взносы</span></button>
-              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('salaries')"><span>👥</span><span>Зарплаты и бонусы</span></button>
-              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('debts')"><span>🤝</span><span>Учёт долгов</span></button>
-              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('crm')"><span>👤</span><span>Мини-CRM клиенты</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('invoice')"><span>🧾</span><span data-i18n="tool_invoice">Счета и сметы</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('discount')"><span>🏷️</span><span data-i18n="tool_discount">Скидки и акции</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('taxes')"><span>📑</span><span data-i18n="tool_taxes">Налоги и взносы</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('salaries')"><span>👥</span><span data-i18n="tool_salaries">Зарплаты и бонусы</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('calculators')"><span>🧮</span><span data-i18n="tool_calculators">5 Бизнес-калькуляторов</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('competitors')"><span>🎯</span><span data-i18n="tool_competitors">Анализ конкурентов</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('cashflow')"><span>💸</span><span data-i18n="tool_cashflow">Кредиты и разрывы</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('unit_abc')"><span>📈</span><span data-i18n="tool_unit_abc">Юнит-экономика & ABC</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('csv_import')"><span>📥</span><span data-i18n="tool_csv_import">Импорт выписки CSV</span></button>
             </div>
           </div>
 
           <div class="accordion-item">
             <button type="button" class="accordion-trigger" onclick="this.parentElement.classList.toggle('open')">
-              <span>🧠 ИИ-помощники</span>
+              <span id="acc-crm-title" data-i18n="acc_crm">💼 Управление и CRM</span>
               <span class="chevron">▾</span>
             </button>
             <div class="accordion-body">
-              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('copywriter')"><span>✍️</span><span>Генератор текстов</span></button>
-              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('slogans')"><span>✨</span><span>Названия & Слоганы</span></button>
-              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('business_plan')"><span>📋</span><span>Генератор Бизнес-плана</span></button>
-              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('canvas')"><span>🗺️</span><span>Бизнес-модель Canvas</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('crm')"><span>👤</span><span data-i18n="tool_crm">Мини-CRM клиенты</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('debts')"><span>🤝</span><span data-i18n="tool_debts">Учёт долгов</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('goals')"><span>🏆</span><span data-i18n="tool_goals">Цели и привычки</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('crm_hr_stock')"><span>📦</span><span data-i18n="tool_crm_hr_stock">Кадры и склад</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('reminders')"><span>⏰</span><span data-i18n="tool_reminders">Напоминания (.ics)</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('security_pin')"><span>🔒</span><span data-i18n="tool_security_pin">Безопасность (PIN)</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('backup')"><span>💾</span><span data-i18n="tool_backup">Резервная копия</span></button>
             </div>
           </div>
 
           <div class="accordion-item">
             <button type="button" class="accordion-trigger" onclick="this.parentElement.classList.toggle('open')">
-              <span>🎓 Обучение и о приложении</span>
+              <span id="acc-ai-title" data-i18n="acc_ai">🧠 ИИ-помощники и маркетинг</span>
               <span class="chevron">▾</span>
             </button>
             <div class="accordion-body">
-              <button type="button" class="menu-link-btn" onclick="window.APP.openGlossaryModal()"><span>📖</span><span>Словарик терминов</span></button>
-              <button type="button" class="menu-link-btn" onclick="window.APP.startOnboardingTour()"><span>🎬</span><span>Запустить стартовый тур</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('copywriter')"><span>✍️</span><span data-i18n="tool_copywriter">Генератор текстов</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('slogans')"><span>✨</span><span data-i18n="tool_slogans">Названия & Слоганы</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('business_plan')"><span>📋</span><span data-i18n="tool_business_plan">Генератор Бизнес-плана</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('canvas')"><span>🗺️</span><span data-i18n="tool_canvas">Бизнес-модель Canvas</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('content_plan')"><span>📅</span><span data-i18n="tool_content_plan">Контент-план 4 недели</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('sales_scripts')"><span>💬</span><span data-i18n="tool_sales_scripts">Скрипты продаж</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('reviews_nps')"><span>⭐</span><span data-i18n="tool_reviews_nps">Сбор отзывов NPS</span></button>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button type="button" class="accordion-trigger" onclick="this.parentElement.classList.toggle('open')">
+              <span id="acc-edu-title" data-i18n="acc_education">🎓 Обучение и о приложении</span>
+              <span class="chevron">▾</span>
+            </button>
+            <div class="accordion-body">
+              <button type="button" class="menu-link-btn" onclick="window.APP.openGlossaryModal()"><span>📖</span><span data-i18n="tool_glossary">Словарик терминов</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('help_faq')"><span>❓</span><span data-i18n="tool_help_faq">Помощь и FAQ</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('achievements')"><span>👑</span><span data-i18n="tool_achievements">Достижения</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.openToolModal('about_app')"><span>ℹ️</span><span data-i18n="tool_about_app">О CoreMaX AI</span></button>
+              <button type="button" class="menu-link-btn" onclick="window.APP.startOnboardingTour()"><span>🎬</span><span data-i18n="tool_tour">Запустить стартовый тур</span></button>
               <a href="https://www.instagram.com/tojprogs/" target="_blank" rel="noopener noreferrer" class="menu-link-btn" style="text-decoration:none;">
                 <span>📷</span><span>Instagram @tojprogs</span>
               </a>
@@ -443,12 +480,38 @@
       </div>
     </div>
 
+    <!-- 30 LANGUAGES PICKER BOTTOM SHEET -->
+    <div class="modal-backdrop" id="modal-language-picker" onclick="window.APP.closeLanguagePicker()">
+      <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="font-weight:800; font-size:1.1rem; color:var(--text-primary);">🌐 Язык приложения (30 языков)</div>
+          <button type="button" class="btn-chip" onclick="window.APP.closeLanguagePicker()">✕</button>
+        </div>
+
+        <input type="text" id="language-search-input" class="input-control" placeholder="Поиск языка / Search language..." oninput="window.APP.renderLanguagePickerList(this.value)" style="margin-bottom:8px;">
+
+        <div id="language-picker-items" style="display:flex; flex-direction:column; gap:6px; overflow-y:auto; flex:1; max-height:55vh;"></div>
+      </div>
+    </div>
+
+    <!-- 160+ NICHE PICKER BOTTOM SHEET -->
+    <div class="modal-backdrop" id="modal-niche-picker" onclick="window.APP.closeNichePicker()">
+      <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div style="font-weight:800; font-size:1.1rem; color:var(--text-primary);" id="niche-picker-title">🏢 Выбор ниши бизнеса (160+)</div>
+          <button type="button" class="btn-chip" onclick="window.APP.closeNichePicker()">✕</button>
+        </div>
+
+        <div id="niche-picker-body" style="overflow-y:auto; flex:1; max-height:65vh;"></div>
+      </div>
+    </div>
+
     <!-- UNIVERSAL TOOL RUNNER MODAL -->
     <div class="modal-backdrop" id="modal-tool-runner" onclick="this.classList.remove('open')">
       <div class="modal-sheet" onclick="event.stopPropagation()">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
           <div style="font-weight:800; font-size:1.05rem;" id="tool-runner-title">Инструмент</div>
-          <button type="button" class="btn-chip" onclick="$('#modal-tool-runner').classList.remove('open')">✕</button>
+          <button type="button" class="btn-chip" onclick="document.getElementById('modal-tool-runner')?.classList.remove('open')">✕</button>
         </div>
         <div id="tool-runner-body" style="overflow-y:auto; flex:1; max-height:65vh;"></div>
       </div>
@@ -457,333 +520,7 @@
     <div id="toast"></div>
   </div>
 
-  <!-- BUNDLE SCRIPT INITIALIZATION -->
-  <script type="module">
-    import { APP_STATE, saveState, showToast, $, $$, formatMoney, getCurrentCurrency, getCurrentNiche, navigateToScreen, renderAnalyst, renderWhatIf, renderCurrencies, renderHistory, renderAdvisor, sendAdvisorMessage, stopAdvisorGeneration, toggleUseMyData, clearAdvisorChat, copyAdvisorText, saveAdvisorToHistory, reportAdvisorFeedback, explainAdvisorSimpler, openCurrencyPicker, closeCurrencyPicker, renderCurrencyPickerList, selectCurrency, toggleFavCurrency, updateDrawerCurrencyCard, recalcConverter, checkAllChecklistCompleted, updateNavIndicator, showScreenSkeleton } from './src/app.js';
-    import { openNichePicker, selectNiche, filterNiches, openHelpModal, openGlossaryModal } from './src/tools.js';
-    import { SOUND } from './src/sound.js';
-
-    // Global Window Object for clean event delegation
-    window.APP = {
-      navigateToScreen,
-      openNichePicker,
-      selectNiche,
-      filterNiches,
-      openHelpModal,
-      openGlossaryModal,
-      openCurrencyPicker,
-      closeCurrencyPicker,
-      renderCurrencyPickerList,
-      selectCurrency,
-      toggleFavCurrency,
-      recalcConverter,
-      sendAdvisorMessage,
-      stopAdvisorGeneration,
-      toggleUseMyData,
-      clearAdvisorChat,
-      copyAdvisorText,
-      saveAdvisorToHistory,
-      reportAdvisorFeedback,
-      explainAdvisorSimpler,
-      renderWhatIf,
-      checkAllChecklistCompleted,
-
-      toggleEye() {
-        APP_STATE.hideAmounts = !APP_STATE.hideAmounts;
-        saveState();
-        SOUND.play('ding');
-        const icon = $('#eye-icon');
-        if (icon) {
-          icon.textContent = APP_STATE.hideAmounts ? '🙈' : '👁️';
-          icon.classList.remove('eye-blink');
-          void icon.offsetWidth;
-          icon.classList.add('eye-blink');
-        }
-        renderAnalyst();
-        renderWhatIf();
-        renderHistory();
-        showToast(APP_STATE.hideAmounts ? 'Суммы скрыты' : 'Суммы видны');
-      },
-
-      fillSampleData() {
-        APP_STATE.monthData = { revenue: 500000, rent: 100000, salary: 200000, ads: 50000, other: 0 };
-        $('#inp-revenue').value = '500 000';
-        $('#inp-rent').value = '100 000';
-        $('#inp-salary').value = '200 000';
-        $('#inp-ads').value = '50 000';
-        $('#inp-other').value = '0';
-        APP_STATE.checklist.calcDone = true;
-        saveState();
-        renderAnalyst();
-        SOUND.play('ding');
-      },
-
-      calculateAnalyst() {
-        APP_STATE.monthData.revenue = Number($('#inp-revenue')?.value.replace(/\s+/g, '')) || 0;
-        APP_STATE.monthData.rent = Number($('#inp-rent')?.value.replace(/\s+/g, '')) || 0;
-        APP_STATE.monthData.salary = Number($('#inp-salary')?.value.replace(/\s+/g, '')) || 0;
-        APP_STATE.monthData.ads = Number($('#inp-ads')?.value.replace(/\s+/g, '')) || 0;
-        APP_STATE.monthData.other = Number($('#inp-other')?.value.replace(/\s+/g, '')) || 0;
-        APP_STATE.checklist.calcDone = true;
-        saveState();
-        SOUND.play('coins');
-        renderAnalyst();
-        showToast('Расчёт выполнен ✓');
-      },
-
-      swapFx() {
-        const fromSel = $('#fx-from-select');
-        const toSel = $('#fx-to-select');
-        if (!fromSel || !toSel) return;
-        const temp = fromSel.value;
-        fromSel.value = toSel.value;
-        toSel.value = temp;
-        recalcConverter();
-        SOUND.play('click');
-      },
-
-      setHistoryTab(tab) {
-        APP_STATE.activeHistoryTab = tab;
-        saveState();
-        SOUND.play('click');
-        renderHistory();
-      },
-
-      deleteOperation(idx) {
-        if (APP_STATE.incomesExpenses) {
-          APP_STATE.incomesExpenses.splice(idx, 1);
-          saveState();
-          SOUND.play('click');
-          renderHistory();
-        }
-      },
-
-      simulateVoiceInput() {
-        if (confirm('CoreMaX AI запрашивает доступ к микрофону для распознавания голосовых команд (например: «потратил 1500 на закупку продуктов»). Разрешить?')) {
-          SOUND.play('ding');
-          showToast('🎙️ Слушаем... Произнесите сумму и назначение');
-          setTimeout(() => {
-            APP_STATE.incomesExpenses.unshift({ id: 'ie_' + Date.now(), type: 'exp', amt: 1500, desc: 'Закупка продуктов (голосовой ввод)', date: 'Сегодня' });
-            saveState();
-            SOUND.play('coins');
-            renderHistory();
-            showToast('✓ Распознано: расход 1 500 ₽ (продукты)');
-          }, 1500);
-        }
-      },
-
-      openAddOpModal() {
-        const modal = $('#modal-tool-runner');
-        $('#tool-runner-title').textContent = '➕ Добавить операцию';
-        $('#tool-runner-body').innerHTML = `
-          <div class="field-group">
-            <label class="field-label">Тип</label>
-            <select id="op-new-type" class="input-control">
-              <option value="inc">🟢 Доход (Выручка)</option>
-              <option value="exp">🔴 Расход (Затраты)</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Сумма</label>
-            <input type="text" inputmode="decimal" id="op-new-amt" class="input-control" placeholder="10 000">
-          </div>
-          <div class="field-group">
-            <label class="field-label">Описание</label>
-            <input type="text" id="op-new-desc" class="input-control" placeholder="Напр. Оплата поставщику">
-          </div>
-          <button type="button" class="btn btn-gold" onclick="window.APP.saveNewOperation()" style="width:100%; margin-top:8px;">Записать</button>
-        `;
-        modal.classList.add('open');
-      },
-
-      saveNewOperation() {
-        const type = $('#op-new-type')?.value || 'inc';
-        const amt = Number($('#op-new-amt')?.value.replace(/\s+/g, '')) || 0;
-        const desc = ($('#op-new-desc')?.value || '').trim() || (type === 'inc' ? 'Доход' : 'Расход');
-        if (amt <= 0) { showToast('Введите сумму'); return; }
-        APP_STATE.incomesExpenses.unshift({ id: 'ie_' + Date.now(), type, amt, desc, date: 'Сегодня' });
-        saveState();
-        SOUND.play(type === 'inc' ? 'coins' : 'ding');
-        $('#modal-tool-runner').classList.remove('open');
-        renderHistory();
-        showToast('Операция добавлена ✓');
-      },
-
-      openFloatingHelpChat() {
-        navigateToScreen('screen-advisor');
-      },
-
-      openDrawer() {
-        SOUND.play('click');
-        $('#app-drawer')?.classList.add('open');
-        updateDrawerCurrencyCard();
-      },
-
-      closeDrawer() {
-        $('#app-drawer')?.classList.remove('open');
-      },
-
-      setTheme(t, event) {
-        APP_STATE.theme = t;
-        saveState();
-        
-        const wave = $('#theme-transition-wave');
-        if (wave && event) {
-          const x = event.clientX || window.innerWidth / 2;
-          const y = event.clientY || window.innerHeight / 2;
-          
-          wave.style.left = `${x - 20}px`;
-          wave.style.top = `${y - 20}px`;
-          wave.style.width = '40px';
-          wave.style.height = '40px';
-          
-          let targetBg = '#07090e';
-          if (t === 'light') targetBg = '#f1f5f9';
-          else if (t === 'bw') targetBg = '#000000';
-          else if (t === 'system') {
-            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            targetBg = isDark ? '#07090e' : '#f1f5f9';
-          }
-          wave.style.background = targetBg;
-          wave.classList.add('active');
-          
-          setTimeout(() => {
-            if (t === 'system') {
-              const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-              document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-            } else {
-              document.documentElement.setAttribute('data-theme', t);
-            }
-          }, 250);
-          
-          setTimeout(() => {
-            wave.classList.remove('active');
-          }, 600);
-        } else {
-          if (t === 'system') {
-            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-          } else {
-            document.documentElement.setAttribute('data-theme', t);
-          }
-        }
-      },
-
-      toggleBatterySaver() {
-        APP_STATE.batterySaver = !APP_STATE.batterySaver;
-        saveState();
-        SOUND.play('ding');
-        const isB = APP_STATE.batterySaver;
-        document.documentElement.classList.toggle('battery-save', isB);
-        const lbl = $('#drawer-battery-label');
-        if (lbl) {
-          lbl.textContent = isB ? '🔋 Энергосбережение: Вкл' : '🔋 Энергосбережение: Выкл';
-        }
-        showToast(isB ? 'Энергосбережение включено (без эффектов)' : 'Энергосбережение выключено');
-      },
-
-      toggleSound() {
-        APP_STATE.soundEnabled = !APP_STATE.soundEnabled;
-        saveState();
-        $('#drawer-sound-label').textContent = APP_STATE.soundEnabled ? '🔊 Звук: Вкл' : '🔇 Звук: Выкл';
-        if (APP_STATE.soundEnabled) SOUND.play('ding');
-      },
-
-      setCurrencyRegionTab(btn) {
-        $$('#currency-picker-tabs .btn-chip').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderCurrencyPickerList(btn.dataset.region, $('#currency-search-input')?.value || '');
-      },
-
-      startOnboardingTour() {
-        window.APP.closeDrawer();
-        SOUND.play('ding');
-        const modal = $('#modal-tool-runner');
-        if (!modal) return;
-
-        $('#tool-runner-title').textContent = '🎬 Быстрый старт с CoreMaX AI';
-        $('#tool-runner-body').innerHTML = `
-          <div style="display:flex; flex-direction:column; gap:12px; font-size:0.82rem;">
-            <div class="card card-gold">
-              <div style="font-weight:800; font-size:0.9rem; color:var(--gold-primary); margin-bottom:4px;">Шаг 1: Выберите свою нишу</div>
-              <p style="color:var(--text-secondary); margin-bottom:8px;">Сверху в шапке нажмите на текущую нишу (например, "Кафе ▾"), чтобы настроить под себя одну из 160 отраслей бизнеса.</p>
-              <button type="button" class="btn btn-gold" onclick="window.APP.openNichePicker();" style="height:36px; font-size:0.75rem;">Выбрать нишу сейчас ➔</button>
-            </div>
-
-            <div class="card">
-              <div style="font-weight:800; font-size:0.9rem; color:var(--cyan-primary); margin-bottom:4px;">Шаг 2: Экспресс-анализ за 2 минуты</div>
-              <p style="color:var(--text-secondary);">Вводите показатели выручки и расходов на вкладке <b>«Анализ»</b>. ИИ мгновенно рассчитает маржу, прибыль и покажет рекомендации.</p>
-            </div>
-
-            <div class="card">
-              <div style="font-weight:800; font-size:0.9rem; color:var(--emerald-primary); margin-bottom:4px;">Шаг 3: Моделируйте будущее</div>
-              <p style="color:var(--text-secondary);">Перейдите на вкладку <b>«Что если»</b> и подвигайте слайдеры цены или объёма продаж. Вы увидите прогноз прибыли в реальном времени.</p>
-            </div>
-
-            <button type="button" class="btn btn-secondary" onclick="$('#modal-tool-runner').classList.remove('open'); SOUND.play('click');" style="width:100%; margin-top:6px;">Понятно, начать работу ✓</button>
-          </div>
-        `;
-        modal.classList.add('open');
-      },
-
-      openToolModal(toolName) {
-        window.APP.closeDrawer();
-        const modal = $('#modal-tool-runner');
-        const cur = getCurrentCurrency();
-        if (toolName === 'invoice') {
-          APP_STATE.checklist.invoiceDone = true;
-          saveState();
-          renderAnalyst();
-          checkAllChecklistCompleted();
-          $('#tool-runner-title').textContent = '🧾 Счета и сметы';
-          $('#tool-runner-body').innerHTML = `
-            <div class="card card-gold">
-              <div style="font-weight:700; font-size:0.9rem;">Счёт № СЧ-101</div>
-              <div style="font-size:0.8rem; color:var(--text-secondary); margin:6px 0;">Клиент: ООО «Вектор»</div>
-              <div style="font-size:1.3rem; font-weight:800; color:var(--gold-primary);">65 000 ${cur.sym}</div>
-              <button type="button" class="btn btn-gold" onclick="navigator.clipboard?.writeText('Счёт №101 на 65 000 ${cur.sym}'); window.APP.showToast('Скопировано в буфер ✓');" style="width:100%; margin-top:10px;">📋 Скопировать текст счёта</button>
-            </div>
-          `;
-        } else {
-          $('#tool-runner-title').textContent = '⚡ Бизнес-инструмент';
-          $('#tool-runner-body').innerHTML = `<div style="padding:16px; text-align:center; color:var(--text-secondary);">Инструмент активен и настроен для вашей ниши.</div>`;
-        }
-        modal.classList.add('open');
-      },
-
-      showToast
-    };
-
-    // DOM Ready
-    document.addEventListener('DOMContentLoaded', () => {
-      $('#btn-open-drawer')?.addEventListener('click', window.APP.openDrawer);
-      window.APP.setTheme(APP_STATE.theme || 'dark');
-      navigateToScreen(APP_STATE.activeScreen || 'screen-analyst');
-      updateDrawerCurrencyCard();
-
-      // Initialize battery saver
-      if (APP_STATE.batterySaver) {
-        document.documentElement.classList.add('battery-save');
-        const lbl = $('#drawer-battery-label');
-        if (lbl) lbl.textContent = '🔋 Энергосбережение: Вкл';
-      }
-
-      // Update nav indicator
-      setTimeout(() => {
-        updateNavIndicator();
-      }, 50);
-
-      // Dismiss Splash Loader smoothly
-      setTimeout(() => {
-        const splash = $('#app-splash');
-        if (splash) splash.classList.add('hidden');
-      }, 750);
-
-      // Register PWA Service Worker
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
-      }
-    });
-  </script>
+  <!-- APPLICATION ENTRY POINT -->
+  <script type="module" src="./src/main.js"></script>
 </body>
 </html>
